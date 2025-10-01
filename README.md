@@ -27,4 +27,5 @@ A blockchain-powered certificate verification system built on the Hedera network
 1. Build prototype UI for certificate issuance/verification.
 2. Connect to Hedera testnet for certificate storage.
 3. Deploy demo for judges to test.# Hedera-hackathon-demo
-Demo repo for Hedera Africa Hackathon project 
+Demo repo for Hedera Africa Hackathon project ## Demo Prototype
+[👉 Click here to view the prototype](./prototype/index.html)
