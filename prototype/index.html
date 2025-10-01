@@ -1,95 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blockchain Certificate Verifier</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      background: #f4f6f8;
       color: #333;
+    }
+    header {
+      background: #2d2f36;
+      color: #fff;
+      padding: 1.2rem;
       text-align: center;
-      padding: 50px;
     }
-    h1 {
-      color: #2b6cb0;
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
     }
-    .container {
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1.5rem;
       background: #fff;
-      border-radius: 12px;
-      padding: 30px;
-      max-width: 500px;
-      margin: auto;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    input {
-      padding: 10px;
-      margin: 10px 0;
-      width: 80%;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+    section {
+      margin-bottom: 2rem;
     }
-    button {
-      padding: 10px 20px;
-      background: #2b6cb0;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
+    h2 {
+      color: #2d2f36;
+      margin-bottom: 0.5rem;
     }
-    button:hover {
-      background: #1a4b7a;
-    }
-    .result {
-      margin-top: 20px;
+    label {
+      display: block;
+      margin-top: 1rem;
       font-weight: bold;
     }
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      background: #2d2f36;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #444652;
+    }
+    .output, .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f1f1f1;
+      border-radius: 6px;
+      word-wrap: break-word;
+    }
     footer {
-      margin-top: 50px;
-      font-size: 14px;
-      color: #666;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background: #2d2f36;
+      color: #fff;
+    }
+    .screenshot {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .screenshot img {
+      max-width: 300px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <header>
     <h1>Blockchain Certificate Verifier</h1>
-    <p>Enter your certificate ID below to verify its authenticity on the Hedera blockchain.</p>
-    
-    <input type="text" id="certId" placeholder="Enter Certificate ID" />
-    <button onclick="verifyCert()">Verify</button>
-    
-    <div class="result" id="result"></div>
-  </div>
+    <p>A Hedera Hackathon 2025 Prototype</p>
+  </header>
+
+  <main>
+    <!-- Issuance Section -->
+    <section>
+      <h2>Issue a Certificate</h2>
+      <label for="studentName">Student Name</label>
+      <input type="text" id="studentName" placeholder="Enter full name" required>
+
+      <label for="course">Course</label>
+      <input type="text" id="course" placeholder="Enter course name" required>
+
+      <label for="year">Year</label>
+      <input type="text" id="year" placeholder="Enter year (e.g. 2025)" required>
+
+      <button onclick="issueCertificate()">Issue Certificate</button>
+      <div class="output" id="issueOutput"></div>
+    </section>
+
+    <!-- Verification Section -->
+    <section>
+      <h2>Verify a Certificate</h2>
+      <label for="txId">Transaction ID</label>
+      <input type="text" id="txId" placeholder="Paste transaction ID here" required>
+
+      <button onclick="verifyCertificate()">Verify Certificate</button>
+      <div class="result" id="verifyOutput"></div>
+    </section>
+
+    <!-- Screenshot Section -->
+    <div class="screenshot">
+      <h2>Screenshot</h2>
+      <img src="Screenshot_20251001-154432.jpg" alt="App Screenshot">
+    </div>
+  </main>
 
   <footer>
-    Demo hosted on 
-    <a href="https://sinclair22brown-cell.github.io/Hedera-hackathon-demo/" target="_blank">
-      GitHub Pages
-    </a>
+    <p>Live Demo: <a href="https://sinclair22brown-cell.github.io/Hedera-hackathon-demo/" target="_blank" style="color:#fff; text-decoration:underline;">
+      Hedera Hackathon Demo
+    </a></p>
+    <p>&copy; 2025 Blockchain Certificate Verifier</p>
   </footer>
 
   <script>
-    function verifyCert() {
-      const certId = document.getElementById("certId").value.trim();
-      const resultBox = document.getElementById("result");
+    // Hash function (SHA-256)
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-      if (certId === "") {
-        resultBox.textContent = "❌ Please enter a certificate ID.";
-        resultBox.style.color = "red";
+    // Issue certificate
+    async function issueCertificate() {
+      const name = document.getElementById('studentName').value.trim();
+      const course = document.getElementById('course').value.trim();
+      const year = document.getElementById('year').value.trim();
+
+      if (!name || !course || !year) {
+        document.getElementById('issueOutput').innerText = "Please fill all fields.";
         return;
       }
 
-      // Fake logic for demo purposes
-      if (certId === "HEDERA123") {
-        resultBox.textContent = "✅ Certificate is VALID and recorded on Hedera.";
-        resultBox.style.color = "green";
+      const data = `${name}-${course}-${year}-${Date.now()}`;
+      const hash = await sha256(data);
+      const txId = "TX-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+      const certificate = { name, course, year, hash, txId };
+      let records = JSON.parse(localStorage.getItem("certificates")) || {};
+      records[txId] = certificate;
+      localStorage.setItem("certificates", JSON.stringify(records));
+
+      document.getElementById('issueOutput').innerHTML = `
+        <strong>Certificate Issued!</strong><br>
+        Transaction ID: ${txId}<br>
+        Hash: ${hash}<br>
+        <button onclick="downloadCert('${txId}')">Download JSON</button>
+      `;
+    }
+
+    // Verify certificate
+    function verifyCertificate() {
+      const txId = document.getElementById('txId').value.trim();
+      let records = JSON.parse(localStorage.getItem("certificates")) || {};
+      const cert = records[txId];
+
+      if (cert) {
+        document.getElementById('verifyOutput').innerHTML = `
+          ✅ Certificate Found:<br>
+          Name: ${cert.name}<br>
+          Course: ${cert.course}<br>
+          Year: ${cert.year}<br>
+          Hash: ${cert.hash}
+        `;
       } else {
-        resultBox.textContent = "⚠️ Certificate not found on Hedera.";
-        resultBox.style.color = "orange";
+        document.getElementById('verifyOutput').innerHTML = "❌ Certificate not found.";
       }
+    }
+
+    // Download JSON certificate
+    function downloadCert(txId) {
+      let records = JSON.parse(localStorage.getItem("certificates")) || {};
+      const cert = records[txId];
+      const blob = new Blob([JSON.stringify(cert, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${txId}.json`;
+      a.click();
     }
   </script>
 </body>
