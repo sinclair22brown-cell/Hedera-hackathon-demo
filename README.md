@@ -1,43 +1,33 @@
 # Blockchain Certificate Verifier
 
-## Problem
-Certificate fraud is a growing issue across Africa. Many employers and schools waste time and resources verifying academic records, and fake certificates are common.
+## 🔍 Problem Statement
+Fake academic and professional certificates are on the rise, making it hard for employers and institutions to trust credentials. Traditional verification is slow, manual, and often unreliable.
 
-## Solution
-A blockchain-powered certificate verification system built on the Hedera network. Schools can issue student certificates, which are stored as immutable records on Hedera. Employers can instantly verify the authenticity of certificates using a transaction ID or certificate hash.
+## 💡 Solution
+A **Blockchain-powered Certificate Verifier** that allows institutions to issue certificates securely on the Hedera network. Anyone can instantly verify the authenticity of a certificate online using its unique blockchain record.
 
-## Features
-- Schools issue certificates and store a hash on Hedera.
-- Employers/stakeholders can verify authenticity online.
-- Secure, transparent, and tamper-proof.
-- Reduces fraud and builds trust in education systems.
+## ⚙️ How It Works
+1. Institution issues a certificate → stored on Hedera blockchain.  
+2. Certificate gets a unique hash → linked to the student’s ID.  
+3. Employer/Verifier enters the certificate code → system checks blockchain.  
+4. Result shows **Valid / Invalid** with certificate details.  
 
-## Tech Stack
-- **Blockchain:** Hedera Hashgraph
-- **Frontend:** Simple web form for issuing & verifying certificates
-- **Backend (future):** Node.js or Python integration with Hedera SDK
+## 🌐 Live Prototype
+👉 [View the Demo](https://yourcustomdomain.com)  
 
-## Impact
-- Helps students prove their credentials faster.
-- Protects employers from hiring fraud.
-- Saves schools time on manual verifications.
-- Builds trust in Africa’s education system.
+## 🖼️ Screenshots
+![Certificate Verifier Screenshot](assets/prototype.png)
 
-## Next Steps
-1. Build prototype UI for certificate issuance/verification.
-2. Connect to Hedera testnet for certificate storage.
-3. Deploy demo for judges to test.# Hedera-hackathon-demo
-Demo repo for Hedera Africa Hackathon project ## Demo Prototype
-[👉 Click here to view the prototype](./prototype/index.html)
-## Demo Prototype
-You can try out a simple demo of our certificate issuance and verification system.
+## 🛠️ Tech Stack
+- **Frontend:** HTML, CSS, JavaScript  
+- **Blockchain:** Hedera Hashgraph (Hedera Consensus Service / Token Service)  
+- **Hosting:** GitHub Pages  
 
-### How to Demo
-1. Open the [Prototype](./prototype/index.html).
-2. In the **Issue Certificate** form, fill in a student’s name, course, and year.
-3. Click **Issue Certificate**. A fake transaction ID and certificate hash will be generated.
-4. Copy the transaction ID shown.
-5. Scroll to the **Verify Certificate** section, paste the ID, and click **Verify**.
-6. You’ll see either:
-   - ✅ Certificate Verified (with student details), or  
-   - ❌ Not Found (if you enter a wrong/random ID).
+## 🚀 Future Improvements
+- Add QR code scanning for instant verification  
+- Mobile app for easier access  
+- Integration with learning platforms (Coursera, Udemy, universities)  
+
+## 👥 Team
+- [Your Name] – Product & Design  
+- (Add teammates here if any)
