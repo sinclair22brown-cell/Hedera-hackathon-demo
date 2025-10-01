@@ -29,3 +29,15 @@ A blockchain-powered certificate verification system built on the Hedera network
 3. Deploy demo for judges to test.# Hedera-hackathon-demo
 Demo repo for Hedera Africa Hackathon project ## Demo Prototype
 [👉 Click here to view the prototype](./prototype/index.html)
+## Demo Prototype
+You can try out a simple demo of our certificate issuance and verification system.
+
+### How to Demo
+1. Open the [Prototype](./prototype/index.html).
+2. In the **Issue Certificate** form, fill in a student’s name, course, and year.
+3. Click **Issue Certificate**. A fake transaction ID and certificate hash will be generated.
+4. Copy the transaction ID shown.
+5. Scroll to the **Verify Certificate** section, paste the ID, and click **Verify**.
+6. You’ll see either:
+   - ✅ Certificate Verified (with student details), or  
+   - ❌ Not Found (if you enter a wrong/random ID).
