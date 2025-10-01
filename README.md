@@ -16,7 +16,7 @@ A **Blockchain-powered Certificate Verifier** that allows institutions to issue 
 👉 [View the Demo](https://yourcustomdomain.com)  
 
 ## 🖼️ Screenshots
-![Certificate Verifier Screenshot](assets/prototype.png)
+![Certificate Verifier Screenshot](assets/Screenshot_20251001-132708.jpg)
 
 ## 🛠️ Tech Stack
 - **Frontend:** HTML, CSS, JavaScript  
