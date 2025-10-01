@@ -13,7 +13,7 @@ A **Blockchain-powered Certificate Verifier** that allows institutions to issue 
 4. Result shows **Valid / Invalid** with certificate details.  
 
 ## 🌐 Live Prototype
-👉 [View the Demo](https://yourcustomdomain.com)  
+👉 [View the Demo](https://sinclair22brown-cell.github.io/Hedera-hackathon-demo/.) 
 
 ## 🖼️ Screenshots
 ![Certificate Verifier Screenshot](Screenshot_20251001-154432.jpg)
