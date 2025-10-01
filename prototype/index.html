@@ -1,128 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Blockchain Certificate Verifier — Demo</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blockchain Certificate Verifier</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width:720px; margin:2rem auto; padding:1rem; line-height:1.4; }
-    input, button { padding:8px; margin:6px 0; width:100%; box-sizing:border-box; }
-    button { cursor:pointer; }
-    .result { padding:10px; margin-top:12px; border-radius:6px; }
-    .success { background:#e6ffed; border:1px solid #2d9a3f; color:#083b17; }
-    .error { background:#ffecec; border:1px solid #d12f2f; color:#5a0303; }
-    code { background:#f4f4f4; padding:2px 6px; border-radius:4px; }
-    .small { font-size:0.9rem; color:#666; margin-top:10px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #2b6cb0;
+    }
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    input {
+      padding: 10px;
+      margin: 10px 0;
+      width: 80%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      background: #2b6cb0;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #1a4b7a;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    footer {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #666;
+    }
   </style>
 </head>
 <body>
-  <h1>Blockchain Certificate Verifier — Demo</h1>
+  <div class="container">
+    <h1>Blockchain Certificate Verifier</h1>
+    <p>Enter your certificate ID below to verify its authenticity on the Hedera blockchain.</p>
+    
+    <input type="text" id="certId" placeholder="Enter Certificate ID" />
+    <button onclick="verifyCert()">Verify</button>
+    
+    <div class="result" id="result"></div>
+  </div>
 
-  <section id="issue">
-    <h2>Issue Certificate</h2>
-    <form id="issueForm">
-      <label>Student Name</label>
-      <input id="studentName" type="text" placeholder="Jane Doe" required />
-      <label>Course</label>
-      <input id="course" type="text" placeholder="Diploma in X" required />
-      <label>Year</label>
-      <input id="year" type="text" placeholder="2025" required />
-      <button type="submit">Issue Certificate</button>
-    </form>
-    <div id="issueResult" class="result" style="display:none;"></div>
-  </section>
-
-  <section id="verify" style="margin-top:18px;">
-    <h2>Verify Certificate</h2>
-    <form id="verifyForm">
-      <label>Transaction ID / Hash</label>
-      <input id="txId" type="text" placeholder="Paste transaction ID (e.g. 1a2b3c...)" required />
-      <button type="submit">Verify</button>
-    </form>
-    <div id="verifyResult" class="result" style="display:none;"></div>
-  </section>
-
-  <p class="small">
-    Note: This is a demo. In the real product, the certificate **hash** would be written to the Hedera testnet. This prototype simulates issuance + verification in the browser using localStorage.
-  </p>
+  <footer>
+    Demo hosted on 
+    <a href="https://sinclair22brown-cell.github.io/Hedera-hackathon-demo/" target="_blank">
+      GitHub Pages
+    </a>
+  </footer>
 
   <script>
-    // Utility: create a pseudo transaction id (hex)
-    function generateTxId() {
-      const a = crypto.getRandomValues(new Uint8Array(12));
-      return Array.from(a).map(b => b.toString(16).padStart(2,'0')).join('');
-    }
+    function verifyCert() {
+      const certId = document.getElementById("certId").value.trim();
+      const resultBox = document.getElementById("result");
 
-    // Simple DB in localStorage
-    const DB_KEY = 'certi-demo-db';
-    function loadDb() {
-      try { return JSON.parse(localStorage.getItem(DB_KEY)) || {}; }
-      catch(e) { return {}; }
-    }
-    function saveDb(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
-
-    // Helper to show results
-    function show(elementId, html, cls) {
-      const el = document.getElementById(elementId);
-      el.style.display = 'block';
-      el.className = 'result ' + cls;
-      el.innerHTML = html;
-    }
-
-    // Issue certificate: compute SHA-256, store record keyed by txId
-    document.getElementById('issueForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const name = document.getElementById('studentName').value.trim();
-      const course = document.getElementById('course').value.trim();
-      const year = document.getElementById('year').value.trim();
-      if (!name || !course || !year) {
-        alert('Fill all fields');
+      if (certId === "") {
+        resultBox.textContent = "❌ Please enter a certificate ID.";
+        resultBox.style.color = "red";
         return;
       }
-      const payload = `${name}|${course}|${year}|${Date.now()}`;
-      // compute SHA-256
-      crypto.subtle.digest('SHA-256', new TextEncoder().encode(payload)).then(hashBuf => {
-        const hashArray = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
-        const txId = generateTxId();
-        const db = loadDb();
-        db[txId] = {
-          name, course, year, hash: hashArray, issuedAt: new Date().toISOString()
-        };
-        saveDb(db);
-        show('issueResult',
-          `<strong>Certificate issued</strong><br>
-           Transaction ID: <code>${txId}</code><br>
-           Hash (truncated): <code>${hashArray.slice(0,40)}... (truncated)</code>`,
-          'success'
-        );
-        document.getElementById('issueForm').reset();
-      }).catch(err => {
-        show('issueResult', `<strong>Error computing hash</strong><br>${err}`, 'error');
-      });
-    });
 
-    // Verify certificate by transaction id
-    document.getElementById('verifyForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      const tx = document.getElementById('txId').value.trim();
-      const db = loadDb();
-      if (db[tx]) {
-        const rec = db[tx];
-        show('verifyResult',
-          `<strong>✅ Certificate Verified</strong><br>
-           Student: <strong>${rec.name}</strong><br>
-           Course: <strong>${rec.course}</strong><br>
-           Year: <strong>${rec.year}</strong><br>
-           Issued at: <small>${rec.issuedAt}</small><br>
-           Hash (truncated): <code>${rec.hash.slice(0,40)}...</code>`,
-          'success'
-        );
+      // Fake logic for demo purposes
+      if (certId === "HEDERA123") {
+        resultBox.textContent = "✅ Certificate is VALID and recorded on Hedera.";
+        resultBox.style.color = "green";
       } else {
-        show('verifyResult',
-          `<strong>❌ Not Found</strong><br>No certificate found for Transaction ID: <code>${tx}</code>`,
-          'error'
-        );
+        resultBox.textContent = "⚠️ Certificate not found on Hedera.";
+        resultBox.style.color = "orange";
       }
-    });
+    }
   </script>
 </body>
 </html>
